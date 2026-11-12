@@ -5,6 +5,9 @@ import { Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import Layout from './components/Layout';
+import Home from './pages/Home';
+import Play from './pages/Play';
+import Result from './pages/Result';
 import QuestionBank from './pages/QuestionBank';
 import QuestionDetail from './pages/QuestionDetail';
 import NotFound from './pages/NotFound';
@@ -14,6 +17,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [bookmarks, setBookmarks] = useState([]);
+  const [playerName, setPlayerName] = useState('');
 
   // Mounting: gọi API, cleanup hủy request
   useEffect(() => {
@@ -38,7 +42,6 @@ const App = () => {
     );
   };
 
-  // Các trang cần dữ liệu câu hỏi: hiện trạng thái chờ / lỗi
   const withData = (element) => {
     if (loading) return <p>Đang tải câu hỏi...</p>;
     if (error) return <p className="error">Không tải được câu hỏi</p>;
@@ -49,9 +52,15 @@ const App = () => {
     <div className="app" data-build={BUILD_TAG}>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<h2>Trang chủ</h2>} />
-          <Route path="play" element={<h2>Màn hình chơi</h2>} />
-          <Route path="result" element={<h2>Kết quả</h2>} />
+          <Route
+            index
+            element={<Home playerName={playerName} setPlayerName={setPlayerName} />}
+          />
+          <Route
+            path="play"
+            element={withData(<Play questions={questions} playerName={playerName} />)}
+          />
+          <Route path="result" element={<Result />} />
           <Route path="history" element={<h2>Lịch sử các lượt chơi</h2>} />
           <Route
             path="questions"
